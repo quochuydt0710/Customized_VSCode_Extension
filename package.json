@@ -1,0 +1,111 @@
+{
+  "name": "customized-coding-support",
+  "displayName": "CustomizedCodingSupport",
+  "description": "Claude Code & CustomizedCodingSupport Engine Parity via AWS Bedrock API",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Programming Languages"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "customizedcodingsupport.startChat",
+        "title": "CustomizedCodingSupport: Start Chat"
+      },
+      {
+        "command": "customizedcodingsupport.sendTerminalSelection",
+        "title": "Send to CustomizedCodingSupport Chat"
+      }
+    ],
+    "configuration": {
+      "title": "CustomizedCodingSupport",
+      "properties": {
+        "customizedcodingsupport.awsRegion": {
+          "type": "string",
+          "default": "us-east-1",
+          "description": "AWS Region for Bedrock"
+        },
+        "customizedcodingsupport.awsProfile": {
+          "type": "string",
+          "default": "default",
+          "description": "AWS CLI Profile to use"
+        },
+        "customizedcodingsupport.modelId": {
+          "type": "string",
+          "default": "arn:aws:bedrock:us-east-1:609826415497:application-inference-profile/fa4vlb8mlept",
+          "description": "AWS Bedrock Model ID or Inference Profile ARN"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "customizedcodingsupport-sidebar",
+          "title": "CustomizedCodingSupport",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "customizedcodingsupport-sidebar": [
+        {
+          "type": "webview",
+          "id": "customizedcodingsupport.chatView",
+          "name": "Chat"
+        }
+      ]
+    },
+    "menus": {
+      "terminal/context": [
+        {
+          "command": "customizedcodingsupport.sendTerminalSelection",
+          "group": "customizedcodingsupport"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "copy-wasm": "copyfiles -f \"node_modules/web-tree-sitter/tree-sitter.wasm\" \"node_modules/tree-sitter-wasms/out/*.wasm\" dist/wasm",
+    "compile": "npm run copy-wasm && node esbuild.js && npx @tailwindcss/cli -i ./src/webview/index.css -o ./dist/webview.css",
+    "watch": "npm run compile && node esbuild.js --watch",
+    "package": "npm run copy-wasm && node esbuild.js --production && npx @tailwindcss/cli -i ./src/webview/index.css -o ./dist/webview.css --minify",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1109.0",
+    "@xenova/transformers": "^2.17.2",
+    "highlight.js": "^11.12.0",
+    "lucide-react": "^1.31.0",
+    "markdown-it": "^15.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tree-sitter-wasms": "^0.1.13",
+    "web-tree-sitter": "^0.26.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "20.x",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "autoprefixer": "^10.5.4",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.21.5",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.4.5"
+  }
+}
