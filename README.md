@@ -146,6 +146,13 @@ Hệ thống được thiết kế theo mô hình **Multi-Agent Orchestrator** p
 - **New Chat Logic:** Thêm nút khởi tạo cuộc trò chuyện mới, xóa nhanh ngữ cảnh để tối ưu Token và bộ nhớ.
 - **Real-time Streaming Rendering:** Hiển thị trực tiếp nội dung Markdown khi Agent đang type chữ (thay vì chỉ hiện chữ "Thinking...").
 
+### 🌐 Phase 10: Antigravity System Tools & Sub-Agents (Đã hoàn thiện)
+- **Hệ thống Tools Toàn Diện:** Bổ sung `write_file` (tạo file mới), `web_search` (DuckDuckGo Search) để cập nhật kiến thức realtime. Nâng cấp `read_file` hỗ trợ đọc theo dòng (`start_line`, `end_line`) tối ưu Token.
+- **Browser Automation:** Công cụ `browser_action` điều khiển Playwright tự động hóa test giao diện và thu thập toàn bộ log lỗi trình duyệt (`console_logs`).
+- **Terminal Permissions (Human-in-the-loop):** Áp dụng Sandbox cho `run_command`, tự động chặn và hiển thị Popup xin quyền khi LLM chạy lệnh nguy hiểm (như `rm -rf`).
+- **MCP Integration:** Hỗ trợ giao thức Model Context Protocol (MCP) để gọi tới các Server bên thứ 3.
+- **Kiến trúc Sub-Agents Bất Đồng Bộ:** Ra mắt `SubAgentController` và công cụ `spawn_subagent`, cho phép Orchestrator ủy quyền tác vụ cho các chuyên gia `research`, `browser`, `tester` chạy ngầm.
+
 ---
 *Lưu ý: Bạn có thể cập nhật thông tin nhà phát hành trong file `package.json` trước khi build.*
 

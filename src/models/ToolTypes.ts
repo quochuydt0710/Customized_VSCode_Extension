@@ -15,11 +15,13 @@ export interface BedrockMessage {
 
 export const read_file_schema: ToolSchema = {
     name: "read_file",
-    description: "Đọc nội dung của một file",
+    description: "Đọc nội dung của một file. Có thể truyền start_line và end_line để đọc một phần của file giúp tiết kiệm token.",
     inputSchema: {
         type: "object",
         properties: {
-            path: { type: "string", description: "Đường dẫn tuyệt đối hoặc tương đối của file" }
+            path: { type: "string", description: "Đường dẫn tuyệt đối hoặc tương đối của file" },
+            start_line: { type: "number", description: "Dòng bắt đầu đọc (tuỳ chọn)" },
+            end_line: { type: "number", description: "Dòng kết thúc đọc (tuỳ chọn)" }
         },
         required: ["path"]
     }
@@ -148,4 +150,69 @@ export const run_and_fix_tests_schema: ToolSchema = {
     }
 };
 
+export const write_file_schema: ToolSchema = {
+    name: "write_file",
+    description: "Tạo file mới hoặc ghi đè hoàn toàn nội dung một file.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            path: { type: "string", description: "Đường dẫn file cần tạo/ghi đè" },
+            content: { type: "string", description: "Nội dung đầy đủ của file" }
+        },
+        required: ["path", "content"]
+    }
+};
 
+export const web_search_schema: ToolSchema = {
+    name: "web_search",
+    description: "Tìm kiếm thông tin trên Internet (ví dụ: Google, DuckDuckGo) để cập nhật kiến thức hoặc debug.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            query: { type: "string", description: "Từ khóa tìm kiếm" }
+        },
+        required: ["query"]
+    }
+};
+
+export const browser_action_schema: ToolSchema = {
+    name: "browser_action",
+    description: "Thực hiện các thao tác trên trình duyệt (Playwright) như mở trang, click, chụp ảnh màn hình.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            action: { type: "string", description: "Hành động: goto, click, type, screenshot" },
+            url: { type: "string", description: "URL (dùng cho goto)" },
+            selector: { type: "string", description: "CSS Selector (dùng cho click, type)" },
+            text: { type: "string", description: "Text để nhập (dùng cho type)" }
+        },
+        required: ["action"]
+    }
+};
+
+export const mcp_request_schema: ToolSchema = {
+    name: "mcp_request",
+    description: "Gửi request tới một Model Context Protocol (MCP) server.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            server: { type: "string", description: "Tên hoặc URL của MCP server" },
+            action: { type: "string", description: "Tên phương thức/hành động cần gọi" },
+            params: { type: "object", description: "Tham số truyền vào cho hành động" }
+        },
+        required: ["server", "action"]
+    }
+};
+
+export const spawn_subagent_schema: ToolSchema = {
+    name: "spawn_subagent",
+    description: "Tạo một Sub-Agent chuyên trách để thực hiện nhiệm vụ song song.",
+    inputSchema: {
+        type: "object",
+        properties: {
+            role: { type: "string", description: "Vai trò của Sub-Agent (ví dụ: research, browser, tester)" },
+            task: { type: "string", description: "Mô tả chi tiết nhiệm vụ giao cho Sub-Agent" }
+        },
+        required: ["role", "task"]
+    }
+};

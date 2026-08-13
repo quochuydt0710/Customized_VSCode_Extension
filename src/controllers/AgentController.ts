@@ -3,8 +3,9 @@ import * as vscode from 'vscode';
 import { ToolSchema, BedrockMessage } from '../models/ToolTypes';
 import { ToolHandler } from './ToolHandler';
 import { TerminalHandler } from './TerminalHandler';
-import { execute_terminal_command_schema, read_file_schema, list_dir_schema, grep_search_schema, replace_string_in_file_schema, semantic_search_schema, git_status_schema, git_diff_schema, git_commit_schema, read_url_schema, create_shadow_branch_schema, run_and_fix_tests_schema } from '../models/ToolTypes';
+import { execute_terminal_command_schema, read_file_schema, list_dir_schema, grep_search_schema, replace_string_in_file_schema, semantic_search_schema, git_status_schema, git_diff_schema, git_commit_schema, read_url_schema, create_shadow_branch_schema, run_and_fix_tests_schema, write_file_schema, web_search_schema, browser_action_schema, mcp_request_schema, spawn_subagent_schema } from '../models/ToolTypes';
 import { ContextEngine } from './ContextEngine';
+import { SubAgentController } from './SubAgentController';
 
 export class AgentController {
     private client: BedrockRuntimeClient;
@@ -47,7 +48,12 @@ export class AgentController {
             { toolSpec: git_commit_schema },
             { toolSpec: read_url_schema },
             { toolSpec: create_shadow_branch_schema },
-            { toolSpec: run_and_fix_tests_schema }
+            { toolSpec: run_and_fix_tests_schema },
+            { toolSpec: write_file_schema },
+            { toolSpec: web_search_schema },
+            { toolSpec: browser_action_schema },
+            { toolSpec: mcp_request_schema },
+            { toolSpec: spawn_subagent_schema }
         ].map(t => ({
             toolSpec: {
                 name: t.toolSpec.name,
@@ -166,6 +172,10 @@ export class AgentController {
                         let toolResultContent: any;
                         if (toolReq.name === 'execute_terminal_command') {
                             toolResultContent = await this.terminalHandler.executeTerminalCommand(toolReq.input.command);
+                        } else if (toolReq.name === 'spawn_subagent') {
+                            onStreamText(`\n\n[Orchestrator: Spawning Sub-Agent (${toolReq.input.role})...]\n`);
+                            const report = await SubAgentController.spawn(toolReq.input.role, toolReq.input.task, onStreamText);
+                            toolResultContent = { success: true, report: report };
                         } else {
                             toolResultContent = await this.toolHandler.executeTool(toolReq.name, toolReq.input);
                         }
