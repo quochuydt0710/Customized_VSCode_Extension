@@ -56,7 +56,8 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
                             abortController.signal,
                             (text) => {
                                 webviewView.webview.postMessage({ type: 'stream_text', value: text });
-                            }
+                            },
+                            data.maxIterations
                         );
                         webviewView.webview.postMessage({ type: 'stream_end' });
                         break;

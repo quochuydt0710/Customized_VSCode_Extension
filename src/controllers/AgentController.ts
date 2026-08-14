@@ -27,8 +27,10 @@ export class AgentController {
         history: any[],
         systemPrompts: any[],
         abortSignal: AbortSignal,
-        onStreamText: (text: string) => void
+        onStreamText: (text: string) => void,
+        effortLevel: number = 10
     ): Promise<BedrockMessage[]> {
+        this.maxIterations = effortLevel || 10;
         const projectRules = await ContextEngine.getProjectRules();
         
         let systemText = "You are CustomizedCodingSupport, a highly capable AI assistant inside VS Code. You can read files, modify files, and run terminal commands to help the user.";

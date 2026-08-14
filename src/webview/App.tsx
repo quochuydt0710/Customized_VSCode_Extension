@@ -32,7 +32,8 @@ const App: React.FC = () => {
     const [isStreaming, setIsStreaming] = useState(false);
     const [imageBase64, setImageBase64] = useState<string | null>(null);
     const [isRecording, setIsRecording] = useState(false);
-    const [selectedModel, setSelectedModel] = useState('');
+    const [selectedModel, setSelectedModel] = useState<string>('gemini-3.1-pro-high');
+    const [effort, setEffort] = useState<number>(20); // Default to medium
     const streamingTextRef = useRef('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,7 +74,7 @@ const App: React.FC = () => {
         const newMessages: Message[] = [...messages, { role: 'user', content: input, image: imageBase64 || undefined }];
         setMessages(newMessages);
         
-        vscode.postMessage({ type: 'prompt', value: input, imageBase64, modelId: selectedModel });
+        vscode.postMessage({ type: 'prompt', value: input, imageBase64, modelId: selectedModel, maxIterations: effort });
         
         setInput('');
         setImageBase64(null);
@@ -236,6 +237,24 @@ const App: React.FC = () => {
                                     <option value="us.anthropic.claude-5-sonnet-2026-v1:0">Claude Sonnet 5</option>
                                     <option value="us.anthropic.claude-5-opus-2026-v1:0">Claude Opus 5</option>
                                     <option value="us.anthropic.claude-4-8-opus-2025-v1:0">Claude Opus 4.8</option>
+                                </select>
+                            </div>
+
+                            <div className="relative group flex items-center border-l border-gray-700 pl-2 ml-1">
+                                <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-200 transition-colors p-1 rounded-md hover:bg-gray-700/50">
+                                    <span>Effort: {effort === 10 ? 'Low' : effort === 20 ? 'Medium' : effort === 40 ? 'High' : effort === 80 ? 'Extra' : effort}</span>
+                                    <ChevronUp size={14} />
+                                </button>
+                                <select 
+                                    value={effort}
+                                    onChange={(e) => setEffort(Number(e.target.value))}
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                                    title="Select Effort Level"
+                                >
+                                    <option value={10}>Low (10)</option>
+                                    <option value={20}>Medium (20)</option>
+                                    <option value={40}>High (40)</option>
+                                    <option value={80}>Extra (80)</option>
                                 </select>
                             </div>
                         </div>
